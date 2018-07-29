@@ -40,6 +40,17 @@ io.on('connection',(socket) => {
     //     console.log('createEmail',newEmail);
     // });
 
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Hi! Welcome to the Chat App',
+        createdAt: new Date().getTime()
+    });
+    socket.broadcast.emit('newMessage',{
+        from: 'Admin',
+        text: 'New user has joined',
+        createdAt: new Date().getTime()
+    });
+
     socket.on('createMessage', (newMessage) => {
         console.log('createMessage',newMessage);
         // Socket.emit sends to one. io.emit broadcasts to all connected
@@ -48,6 +59,14 @@ io.on('connection',(socket) => {
             text: newMessage.text,
             createdAt: new Date().getTime()
         });
+        
+        //socket.broadbast.emit works like the above one.
+        // But the major difference is that it broadcasts to everyone except for this user (io.emit sends to all including this user)
+        // socket.broadcast.emit('newMessage',{
+        //     from: newMessage.from,
+        //     text: newMessage.text,
+        //     createdAt: new Date().getTime()
+        // });
     });
 
 
