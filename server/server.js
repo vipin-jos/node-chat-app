@@ -44,8 +44,10 @@ io.on('connection',(socket) => {
     socket.emit('newMessage', generateMessage('Admin','Hi! Welcome to the Chat App'));
     socket.broadcast.emit('newMessage',generateMessage('Admin','New user has joined'));
 
-    socket.on('createMessage', (newMessage) => {
+    // Call back is a function that can be used to send an acknowledgement
+    socket.on('createMessage', (newMessage, callback) => {
         console.log('createMessage',newMessage);
+        callback('this is an acknowledgement from the server');
         // Socket.emit sends to one. io.emit broadcasts to all connected
         io.emit('newMessage',generateMessage(newMessage.from, newMessage.text));
         
