@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
+const {generateMessage} = require('./utils/message.js');
 
 // this is for heroku. If the environment variable port exisits it assigns, else uses 3000
 const port = process.env.PORT || 3000;
@@ -40,25 +41,13 @@ io.on('connection',(socket) => {
     //     console.log('createEmail',newEmail);
     // });
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Hi! Welcome to the Chat App',
-        createdAt: new Date().getTime()
-    });
-    socket.broadcast.emit('newMessage',{
-        from: 'Admin',
-        text: 'New user has joined',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin','Hi! Welcome to the Chat App'));
+    socket.broadcast.emit('newMessage',generateMessage('Admin','New user has joined'));
 
     socket.on('createMessage', (newMessage) => {
         console.log('createMessage',newMessage);
         // Socket.emit sends to one. io.emit broadcasts to all connected
-        io.emit('newMessage',{
-            from: newMessage.from,
-            text: newMessage.text,
-            createdAt: new Date().getTime()
-        });
+        io.emit('newMessage',generateMessage(newMessage.from, newMessage.text));
         
         //socket.broadbast.emit works like the above one.
         // But the major difference is that it broadcasts to everyone except for this user (io.emit sends to all including this user)
