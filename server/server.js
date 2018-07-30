@@ -2,7 +2,7 @@ const path = require('path');
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-const {generateMessage} = require('./utils/message.js');
+const {generateMessage, generateLocationMessage} = require('./utils/message.js');
 
 // this is for heroku. If the environment variable port exisits it assigns, else uses 3000
 const port = process.env.PORT || 3000;
@@ -58,6 +58,11 @@ io.on('connection',(socket) => {
         //     text: newMessage.text,
         //     createdAt: new Date().getTime()
         // });
+    });
+
+    socket.on('createLocationMessage',(newLocationMessage,callback) => {
+        console.log(`${newLocationMessage.latitude} , ${newLocationMessage.longitude} `);
+        io.emit('newLocationMessage',generateLocationMessage('Admin', newLocationMessage.latitude,newLocationMessage.longitude));
     });
 
 
